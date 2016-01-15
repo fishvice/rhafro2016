@@ -22,6 +22,7 @@ The seminars will be in English, this being because the R environment is in that
 
 * RStudio and project management
 * Basis of reproducible analysis and document writing
+* Some R base
 
 #### Friday, 19. January 2016 - 13:30 - 15:30
 
@@ -37,7 +38,7 @@ The seminars will be in English, this being because the R environment is in that
 
 * Data exploration based on grammar of data and graphics
 
-#### Friday, 29. February 2016 - 13:30 - 15:30
+#### Friday, 19. February 2016 - 13:30 - 15:30
 
 * More data exploration based on grammar of data and graphics
 
