@@ -1,0 +1,130 @@
+---
+title: "Hafró goes R (remix)"
+author: "Bjarki Þór Elvarsson and Einar Hjörleifsson"
+date: "January 19, 2016"
+output:
+  beamer_presentation: default
+  ioslides_presentation:
+    logo: hafro_logo.svg
+    smaller: yes
+    transition: faster
+    widescreen: yes
+  slidy_presentation: default
+subtitle: Day 1
+---
+
+# Course outline
+
+## Course outline
+* The lecture series will tackle some recent development in R. The intended structure of the course is to have a weekly seminar/practical lab which introduces a particular topic followed by a small assignment as well as suggested further readings.
+
+* The series is intended for those that have not very much experience in using R as their daily working environment. The instructors will be Bjarki Þór Elvarsson and Einar Hjörleifsson.
+
+* The seminars will be in English, this being because the R environment is in that language as well as to accommodate potential participants whose native language may be other then Icelandic.
+
+## List of potential topics and dates
+<div class="columns-2">
+
+* Friday, 22. January 2016 - 13:30 - 15:30
+    - RStudio and project management
+    - Basis of reproducible analysis and document writing
+    - Some R base
+    
+* Friday, 19. January 2016 - 13:30 - 15:30
+    - Getting data into R - introduction
+    - Introduction to the grammar of graphics 
+        + the ggplot2 library
+    
+* Friday, 5. February 2016 - 13:30 - 15:30
+    - Getting data into R - beyond introduction 
+    - Introduction to the grammar of data 
+        + the dplyr library
+
+* Friday, 12. January 2016 - 13:30 - 15:30
+    - Data exploration based on grammar of data and graphics
+
+* Friday, 19. February 2016 - 13:30 - 15:30
+    - More data exploration based on grammar of data and graphics
+
+</div>
+
+
+## Today
+* Introduction to the R-environment
+* RStudio and project management
+  - Using R
+* Basis of reproducible analysis and document writing
+
+```{r fig.width=6, fig.height=3,echo=FALSE}
+library(png)
+library(grid)
+library(gridExtra)
+img <- readPNG("Rlogo-1.png")
+img2 <- readPNG("RStudio-Ball.png")
+
+grid.arrange(rasterGrob(img),rasterGrob(img2),ncol=2)
+```
+
+## Why R? (.. or why not Excel)
+R has become the lingua france of statistical analysis and data wrangling
+
+* It’s free! If you are a teacher or a student, the benefits are obvious
+* It runs on a variety of platforms including Windows, Unix and MacOS
+* It provides an unparalleled platform for programming new statistical
+methods in an easy and straightforward manner
+* It offers powerful tools for data exploration and presentation
+
+
+## The origins of R | The S language
+<div class="columns-2">
+
+```{r fig.width=6, fig.height=3,echo=FALSE}
+library(png)
+library(grid)
+library(gridExtra)
+img <- readPNG("bell.png")
+
+grid.raster(img)
+```
+
+* The early days of statistical computing used fortran (and punchcards)
+* The S language conceived to allow interactive data analysis, combining fortran routines 
+* Developed at Bell labs in the late 70's by John Chambers
+* One of many languages developed at the time for interactive data analysis and calculations (SAS, SPSS, Matlab)
+* Commercially implemented as Splus
+</div>
+
+## The origins of R | Development of R
+<div class="columns-2">
+
+```{r fig.width=3, fig.height=6,echo=FALSE}
+library(jpeg)
+library(grid)
+library(gridExtra)
+img <- readJPEG('Ihaka-Gentleman.jpg')
+grid.raster(img)
+```
+
+* The development of R started in the early 90's by Ross Ihaka and Robert Gentleman in New Zealand
+* The main driver behind the development was to build a teaching tool for statistics based loosely on the S language
+* It quickly became very popular among statistician and has slowly been seeping into other communities 
+
+</div>
+
+# What is R 
+
+## What is R
+* Program that does statistics
+* A programming language
+* Data crunching environment 
+
+# RStudio
+
+## Interacting with R
+
+
+## RStudio
+* RStudio allows the user to run R in a more user-friendly environment.  It is open- source (i.e. free) and available at \url{www.rstudio.com}
+* built to help you write R code, run R code, and analyze data with R
+* text editor, version control, project handling, markdown support, keyboard shortcuts, debugging tools, and much more
+
