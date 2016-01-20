@@ -3,12 +3,12 @@ title: "Hafró goes R (remix)"
 author: "Bjarki Þór Elvarsson and Einar Hjörleifsson"
 date: "January 19, 2016"
 output:
-  beamer_presentation: default
   ioslides_presentation:
     logo: hafro_logo.svg
     smaller: yes
     transition: faster
     widescreen: yes
+  beamer_presentation: default
   slidy_presentation: default
 subtitle: Day 1
 ---
