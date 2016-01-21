@@ -1,9 +1,32 @@
-# vector with numbers
+## simple calculations
+1 + 1
+
+1 + 2 + 4
+
+2*4
+
+2^3
+
+log(10)
+
+exp(1)
+
+1/7
+## assignment
+
+x <- 1.2
+y <- 'A'
+z <- TRUE
+w <- factor('A')
+
+## vector with numbers
 x<-c(1,2,3)
 (x<-c(1,2,3))
-# vector with letters
+
+## vector with letters
 (y<-c("a","b","c"))
-# vector with logicals
+
+## vector with logicals
 (z1<-c(TRUE,TRUE,FALSE))
 (z2<-c(T,T,F)) # same
 
@@ -12,18 +35,14 @@ class(x)
 class(y)
 class(z1)
 
-# skodum hvad er til i vinnusvaedinu
-ls()
-# fjarlaegjum hlut ur vinnusvaedi
-rm(x)
-ls()
+
 
 ######################################
-# nokkrar gagnlegar skipanir
+# few useful commands
 
-# buum til vigra
+# make an vector
 (x1<-seq(1,10))
-# sama
+# the same
 (x1<-1:10)
 (x2<-seq(0,1,length=10))
 
@@ -31,43 +50,43 @@ rep(1,10)
 rep(c(1,2,3),2)
 rep(c(1,2,3),each=2)
 
-# lengd vigurs
+# length of a vector
 length(x1)
 
 (x3<-c(6,3,8,9,4))
-# rada stokum eftir rod
+# sort the elements of the vector
 sort(x3)
-# hvar i staerdarrod er stakid
+# find the rank of each element
 rank(x3)
-# skilar visi a staerdarrod
+# gives an index for reordering
 order(x3)
 
-# sameina vigra
+# join two vectors
 c(x1,x2)
 cbind(x1,x2)
 rbind(x1,x2)
 
 ######################################
-# visun i vigra
+# vector indices
 x4<-c(4,7,5,3,4,8,9)
-# na i fyrsta stak i vigrinum x4
+# first element of x4
 x4[1]
-# na i fyrsta og annad stak
+# first and fourth
 x4[c(1,4)]
-# notum skilyrdi til ad velja stok
+# use logicals
 x4[x4>=7]
-# visar sem uppfylla skilyrdi
+# indices that satify a condition
 which(x4>=7)
-which(x4!=3)   # != ekki jafnt og
-which(x4==3)   # != ekki jafnt og
+which(x4!=3)   # != not equal to
+which(x4==3)   # == equal to
 
-# na i oll stok nema thad fyrsta
+# get everything except the first element
 x4[-1]
-# ma i oll stok nema fyrsta og annad
+# get everything except the first element and second element
 x4[-c(1,2)]
 
 ######################################
-# endurteknigarreglan - VARUD
+# WARNING -- repetions
 
 (y1<-c(1,2,3,4))
 (y2<-c(1,2,3))
@@ -82,34 +101,62 @@ y1*y2
 y1*y3  #!
 
 ######################################
-# fylki
+# matricies
 
 (X<-matrix(1:10,ncol=2,byrow=T))
 (Y<-matrix(1:10,ncol=2,byrow=F))
-# visa i stak i fylki
+# single element
 X[1,2]
-# na i annan dalk
+# get the second column
 X[,2]
-# na i thridju rodina
+# get the third row
 X[3,]
-# staerd fylkis
+# matrix size
 dim(X)
-# getum gefum dalkum og rodum i fylkinu nafn
+# we can name them
 rownames(Y)<-c("ry1","ry2","ry3","ry4","ry5")
 colnames(Y)<-c("dy1","dy2")
 Y
-# tha er haegt ad visa i eftir nafni
+# and call them by name
 Y["ry2","dy2"]
 
-# fylki bylt
+# transpose
 t(X)
-# stakvis margfoldun
+# elementwise multiplication
 X*Y
-# hefdbundin fylkjamargfoldun
+# normal matrix multiplication
 X%*%t(Y)
 
 (Z<-matrix(1:4,ncol=2))
-# akvedan
+# determinant
 det(Z)
-# andhverfan
+# inverse
 solve(Z)
+
+## Dataframes
+## lets look at the Boston dataset
+
+library(MASS)
+
+########################################
+# useful stull
+
+# how does this dataset look like
+head(Boston,n=10)
+names(Boston)
+dim(Boston)
+str(puls)
+
+# use $ to get a column in the data.frame
+Boston$crim[3]
+Boston[1,3]
+Boston[3,1]
+
+
+## list all variables in the environment
+ls()
+
+# remove x from the environment
+rm(x)
+ls()
+
