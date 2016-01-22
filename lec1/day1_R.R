@@ -138,7 +138,7 @@ solve(Z)
 minke <- read.csv2('minke.csv')
 
 ########################################
-# useful stull
+# useful stuff
 
 # how does this dataset look like
 head(minke,n=10)
@@ -163,3 +163,46 @@ ls()
 rm(x)
 ls()
 
+## if - else - then
+x <- 10
+## check if x is greater than 0
+if(x>0){
+  print('x is positive')
+}
+
+x <- 10
+
+## check if x > 10
+if(x>10){
+  print('x is greater than 10')
+} else if(x>=0){
+  print('x is less than 10 but greater than or equal to 0')
+} else {
+  print('x is negative')
+}
+
+## ifelse
+x <- c(1,2,3,NA,4,5)
+## find all missing entries and replace them
+x <- ifelse(is.na(x),0,x)
+
+## loops
+## find the number of entries in the data
+n <- nrow(minke)
+
+## calculate the mean length old fashion way
+ML <- 0
+for(i in 1:n){
+  ML <- ML + dat$length[i]
+}
+ML <- ML/n
+
+
+## functions
+add1 <- function(x){
+  x <- x + 1
+  return(x)
+}
+
+add1(10)
+x

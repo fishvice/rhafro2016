@@ -456,8 +456,8 @@ x[x!=3&x<5]   ## all elements that not equal to 3 and <5
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Dataframes}
-\bi Dataframes are collections of vectors (columns) of the same length, similar to a table in a database
+\frametitle{Data-frames}
+\bi Data frames are collections of vectors (columns) of the same length, similar to a table in a database
 \vs
 \item The columns do not need to be of the same type
 \vs
@@ -475,7 +475,7 @@ data[2,1]           ## get entry number 2 from column 1
 \end{frame}
 
 \begin{frame}[fragile,shrink=20]
-\frametitle{Base R scatterplot}
+\frametitle{Base R scatter plot}
 <<fig.height=5>>=
 x <- 1:9
 y <- 10*(1:9)
@@ -752,7 +752,7 @@ library(ggplot2)            ## load it into memory
   \frametitle{Excercise 1}
   \bi Create a new directory anywhere on your computer and names it "Classwork"
   \item Open R-studio and create a new project called "classEx1" and associate it with the newly created directory
-  \item Install ggplot2, tidyr, dplyr and gridExtra if you haven't done so already
+  \item Install geo, ggplot2, tidyr, dplyr and gridExtra if you haven't done so already
   \item Create a new script named 'Ex1.R'
   \item Look at the help page for 'sum'
   \item Write a script that calculates the sum of all numbers from 1 to 100
@@ -784,12 +784,10 @@ if(condition){
 \begin{frame}[fragile]
 \frametitle{if sentences - example}
 <<eval=FALSE>>=
-dat <- read.csv2('fish.csv')
-
-## check if depth data is available for all
-## entries, if not do something
-if(sum(is.na(dat$depth))>0){
-    print('Some depth data missing')
+x <- 10
+## check if x is greater than 0
+if(x>0){
+    print('x is positive')
 }
 @
 
@@ -821,16 +819,15 @@ if(condition_1){
 \begin{frame}[fragile,shrink=0.95]
 \frametitle{if - else sentences - example}
 <<eval=FALSE>>=
-dat <- read.csv2('fish.csv')
+x <- 10
 
-## check if depth data is missing for more than
-## 10 entries
-if(sum(is.na(dat$depth))>10){
-    print('More that 10 entries missing')
-} else if(sum(is.na(dat$depth))>0){
-    print('Less 10 entries missing')
+## check if x > 10
+if(x>10){
+    print('x is greater than 10')
+} else if(x>=0){
+    print('x is less than 10 but greater than or equal to 0')
 } else {
-  print('No depth missing')
+  print('x is negative')
 }
 @
 
@@ -855,12 +852,11 @@ ifelse(condition,
 
 \begin{frame}[fragile,shrink=0.95]
 \frametitle{ifelse sentences - example}
+Replace NA's from data
 <<eval=FALSE>>=
-dat <- read.csv2('fish.csv')
-
+x <- c(1,2,3,NA,4,5)
 ## find all missing entries and replace them
-dat$depth <- ifelse(is.na(dat$depth),0,
-                    dat$depth)
+x <- ifelse(is.na(x),0,x)
 @
 
 \end{frame}
@@ -906,7 +902,7 @@ while(condition){
 \frametitle{Loops, examples}
 <<eval=FALSE>>=
 ## find the number of entries in the data
-n <- nrow(dat)
+n <- nrow(minke)
 
 ## calculate the mean length old fashion way
 ML <- 0
@@ -1023,17 +1019,17 @@ $$C = 100*(W/L^3)$$
 \includegraphics[width=0.9\linewidth]{markdownChunk.png}
 }
 
-\frame{
-\frametitle{Inline R code}
-You can also evaluate R expressions inline by enclosing the expression within a single back-tick qualified with ‘r’. For example, the following code:
+%\frame{
+%\frametitle{Inline R code}
+%You can also evaluate R expressions inline by enclosing the expression within a single back-tick qualified with ‘r’. For example, the following code:
 
-\includegraphics[width=0.9\linewidth]{markdownInline.png}
-
-
-Results in this output: “I counted 2 red trucks on the highway.”
+%\includegraphics[width=0.9\linewidth]{markdownInline.png}
 
 
-}
+%Results in this output: “I counted 2 red trucks on the highway.”
+
+
+%}
 
 \begin{frame}[fragile]
 \frametitle{Markdown commands}
@@ -1100,10 +1096,22 @@ Create a markdown document that describes the analysis in the previous excercise
 \frame{
 \frametitle{Homework}
 
-\huge Use R for all data crunching!!
+{\huge Use R for all data crunching!!}
+
+... and read the ggplot book http://www.hafro.is/~einarhj/education/ggplot2/ and ggplot2.org
 
 }
 
+\frame{
+\frametitle{Further reading}
+\bi http://www.ats.ucla.edu/stat/r/
+\item http://kennslubanki.hi.is/
+\item http://www.statmethods.net/
+\item http://www.r-bloggers.com/
+\item http://stackoverflow.com/questions/tagged/r
+\item http://blog.rstudio.org/
+\ei
+}
 
 
 
