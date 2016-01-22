@@ -134,24 +134,27 @@ det(Z)
 solve(Z)
 
 ## Dataframes
-## lets look at the Boston dataset
-
-library(MASS)
+## lets look at the minke dataset
+minke <- read.csv2('minke.csv')
 
 ########################################
 # useful stull
 
 # how does this dataset look like
-head(Boston,n=10)
-names(Boston)
-dim(Boston)
-str(puls)
+head(minke,n=10)
+names(minke)
+dim(minke)
+str(minke)
 
 # use $ to get a column in the data.frame
-Boston$crim[3]
-Boston[1,3]
-Boston[3,1]
+minke$length[3]
+minke[1,3]
+minke[3,1]
 
+## plots
+
+plot(minke$age,minke$length)
+hist(minke$length)
 
 ## list all variables in the environment
 ls()

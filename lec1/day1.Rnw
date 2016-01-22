@@ -191,18 +191,14 @@ methods in an easy and straightforward manner
 
 \frame{
 \frametitle{Why not Excel}
-\bi In an article from 1998 titled "On the accuracy of statistical procedures in Microsoft Excel 97" \cite{mccullough1999accuracy} noted: \textit{Persons desiring to conduct statistical
-analyses of data are advised not to use Excel}
-\vs
-\item<2-> In 2002 \cite{mccullough2002accuracy}: \textit{Microsoft attempted to fix errors
-in  the  standard  normal  random  number  generator  and  the  inverse  normal  function,  and  in  the
-former case actually made the problem worse}.
-\vs
-\item<3-> In 2005 \cite{mccullough2005accuracy} :  \textit{Additionally, in fixing some errors, Microsoft introduced other errors}
-\vs
-\item<4-> In 2008 \cite{mccullough2008accuracy}: \textit{Persons who wish to conduct statistical analyses should use some other package}.
+\begin{tikzpicture}
+\node at (0,0) {\includegraphics[width=0.7\linewidth]{excel1.png}};
+\node[visible on=<2->] at (0,-1) {\includegraphics[width=0.7\linewidth]{excel3.png}};
+\node[visible on=<3->] at (1,0){\includegraphics[width=0.7\linewidth]{excel2.png}};
+\node[visible on=<4->] at (1,-1) {\includegraphics[width=0.7\linewidth]{excel4.png}};
+\end{tikzpicture}
 
-\ei
+
 }
 
 %\frame{
@@ -438,6 +434,7 @@ a < b    ## a is less than b
 a <= b   ## a is less or equal to b
 a & b    ## a and b
 a | b    ## a or b
+!a       ## not a
 is.na(a) ## is a equal to NA (missing)
 @
 
@@ -450,7 +447,9 @@ x[1]          ## get the first element of a vector
 x[c(1,2)]     ## get the first and second element
 x[-1]         ## get every element except the first one
 x[-c(1,2)]    ## get every element except 1 and 2
-x[x==3]       ## all element that are equal to 3
+x[x==3]       ## all elements that are equal to 3
+x[!is.na(x)]  ## all elements that are not NA
+x[x!=3&x<5]   ## all elements that not equal to 3 and <5
 
 @
 
@@ -474,6 +473,26 @@ data[2,1]           ## get entry number 2 from column 1
 @
 \ei
 \end{frame}
+
+\begin{frame}[fragile,shrink=20]
+\frametitle{Base R scatterplot}
+<<fig.height=5>>=
+x <- 1:9
+y <- 10*(1:9)
+plot(x,y)
+@
+
+\end{frame}
+
+\begin{frame}[fragile,shrink=20]
+\frametitle{Base R histogram}
+<<fig.height=5>>=
+x <- rnorm(100)
+hist(x)
+@
+
+\end{frame}
+
 
 \frame{
 \frametitle{Using R-studio}
@@ -537,7 +556,7 @@ name <- command
 \frametitle{Session info}
   \begin{columns}
   \begin{column}{0.5\linewidth}
-  \bi \textbf{Environment}: Contains a list of all declared variables. If you have a dataset you can double click the variable to view the data. One can also use the \texttt{ls} command to find a list of variables in the environment
+  \bi \textbf{Environment}: Contains a list of all declared variables. If you have a dataset you can double click the variable to view the data.
   \vs
   \vs
   \item \textbf{History}: Contains a list of all previous commands entered into the console.
@@ -740,7 +759,7 @@ library(ggplot2)            ## load it into memory
 \ei
 }
 
-\section{Useful R-commands}
+\section{A bit of R--programming}
 
 
 
@@ -765,7 +784,7 @@ if(condition){
 \begin{frame}[fragile]
 \frametitle{if sentences - example}
 <<eval=FALSE>>=
-dat <- read.csv2('minke.csv')
+dat <- read.csv2('fish.csv')
 
 ## check if depth data is available for all
 ## entries, if not do something
@@ -802,7 +821,7 @@ if(condition_1){
 \begin{frame}[fragile,shrink=0.95]
 \frametitle{if - else sentences - example}
 <<eval=FALSE>>=
-dat <- read.csv2('minke.csv')
+dat <- read.csv2('fish.csv')
 
 ## check if depth data is missing for more than
 ## 10 entries
@@ -837,7 +856,7 @@ ifelse(condition,
 \begin{frame}[fragile,shrink=0.95]
 \frametitle{ifelse sentences - example}
 <<eval=FALSE>>=
-dat <- read.csv2('minke.csv')
+dat <- read.csv2('fish.csv')
 
 ## find all missing entries and replace them
 dat$depth <- ifelse(is.na(dat$depth),0,
@@ -902,7 +921,7 @@ ML <- ML/n
 
 
 \frame{
-\frametitle{Userdefined functions in R}
+\frametitle{User--defined functions in R}
 \bi Even though there are a great number of built in functions/commands/methods in R we sometimes need to write our own functions
 \vs
 \item We use \texttt{function} for that
@@ -934,6 +953,10 @@ nameOfFunction <- function(argument1, argument2, ... ){
 
 \begin{frame}[fragile]
 \frametitle{function}
+<<echo=FALSE>>=
+rm(x)
+@
+
 <<>>=
 add1 <- function(x){
   x <- x + 1
@@ -949,13 +972,15 @@ x
 \frame{
 \frametitle{Class excercise 2}
 
-\bi Read in the minke whale data
+\bi Read in the fish data
 \vs
-\item Define a function that calculates the condition factor of a whales using the formula:
+\item Define a function that calculates the condition factor of a fish using the formula:
 $$C = 100*(W/L^3)$$
-\item Use the function to calculate the condition factor for all whales that have ungutted weight
+\item Use the function to calculate the condition factor for all fish that have ungutted weight
 \vs
-\item Assign classification to all whales with body condition less than 0.8 'Malnourished', for 0.8 and above assign "OK" (hint use ifelse)
+\item Investigate the distribution of the condition factor
+\vs
+\item Assign classification to all fish with body condition less than 0.8 'Malnourished', for 0.8 and above assign "OK" (hint use ifelse)
 \ei
 
 }
@@ -1024,46 +1049,62 @@ List:                  Hyperlinks
   + subitem
 
 \end{verbatim}
+More information can be found in Help->Markdown quick reference
 \end{frame}
 
-\frame{
+\begin{frame}[fragile]
 \frametitle{Markdown equations}
-\bi Markdown
-
-}
+Markdown supports LaTeX equation so
+\begin{verbatim}
+$x^2 + \sum_i a_i y_i^n$
+\end{verbatim}
+becomes
+$$x^2 + \sum_i a_i y_i^n$$
+Further reading: https://en.wikibooks.org/wiki/LaTeX/Mathematics
+\end{frame}
 
 \frame{
 \frametitle{R code chunks}
 
 \begin{tikzpicture}
-\node at (-2,2) {\includegraphics[width=0.5\linewidth]{rmd-code1.png}};
-\node at (2,-2) {\includegraphics[width=0.5\linewidth]{rmd-eval.png}};
-\node at (2,2) {\includegraphics[width=0.5\linewidth]{rmd-echo.png}};
-\node at (-2,-2) {\includegraphics[width=0.5\linewidth]{rmd-echo2.png}};
+\node at (-2,2) {\includegraphics[width=0.6\linewidth,trim={10cm 0 0 0},clip]{rmd-code1.png}};
+\node at (-2,-2) {\includegraphics[width=0.6\linewidth,trim={10cm 0 0 0},clip]{rmd-echo2.png}};
+\node at (4,-2) {\includegraphics[width=0.6\linewidth,trim={10cm 0 0 0},clip]{rmd-eval.png}};
+\node at (4,2) {\includegraphics[width=0.6\linewidth,trim={10cm 0 0 0},clip]{rmd-echo.png}};
+
 \end{tikzpicture}
 
 }
 
+\frame{
+\frametitle{Output options}
+\bi Html, both slides and normal webpages
+\vs
+\item Word, requires either Word or Libreoffice to display
+\vs
+\item Pdf, requires LaTeX:
+\bi Linux do 'yum install texlive'
+\item Windows: install miktex from miktex.org
+\item MacOsX: install MacTeX from tug.org/mactex
+\ei
+\vs
+\item Custom output
+\ei
+}
 
 \frame{
 \frametitle{Class excercise 3}
-\bi Plot the location of
-\item Create a markdown document that
-\ei
+Create a markdown document that describes the analysis in the previous excercise
 }
-
 
 \frame{
-\frametitle{Further reading}
-R:
-\bi R frá grunni (Háskólafjölritun)
-\ei
-Markdown:
-\bi http://shiny.rstudio.com/articles/rmarkdown.html
-\item http://www.introductoryr.co.uk/Reproducibility/Markdown\_guide.html
-\ei
+\frametitle{Homework}
+
+\huge Use R for all data crunching!!
 
 }
+
+
 
 
 
