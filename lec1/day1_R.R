@@ -15,9 +15,10 @@ exp(1)
 ## assignment
 
 x <- 1.2
+1.3 -> x1
 y <- 'A'
 z <- TRUE
-w <- factor('A')
+w <- factor(c('A','B','A'))
 
 ## vector with numbers
 x<-c(1,2,3)
@@ -34,7 +35,8 @@ x<-c(1,2,3)
 class(x)
 class(y)
 class(z1)
-
+## for matricies
+mode(x)
 
 
 ######################################
@@ -66,15 +68,23 @@ c(x1,x2)
 cbind(x1,x2)
 rbind(x1,x2)
 
+x <- rnorm(100)
+
+mean(x)
+median(x)
+quantile(x)
+
 ######################################
 # vector indices
 x4<-c(4,7,5,3,4,8,9)
 # first element of x4
 x4[1]
+x3[5]
 # first and fourth
 x4[c(1,4)]
 # use logicals
 x4[x4>=7]
+x4[x4 != 3]
 # indices that satify a condition
 which(x4>=7)
 which(x4!=3)   # != not equal to
@@ -162,6 +172,10 @@ ls()
 # remove x from the environment
 rm(x)
 ls()
+
+## remove everything
+rm(list=ls())
+
 
 ## if - else - then
 x <- 10
