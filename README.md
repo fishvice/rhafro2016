@@ -17,14 +17,17 @@ The seminars will be in English, this being because the R environment is in that
 * Basis of reproducible analysis and document writing
 * Some R base
 
-#### Friday, 19. January 2016 - 13:30 - 15:30
+[Content](http://www.hafro.is/~bthe/R-hafro-day1.zip)
 
-* Getting data into R - introduction
+#### Friday, 29. January 2016 - 13:30 - 15:30
+
 * Introduction to the grammar of graphics - the ggplot2 library
+
+[Content](ggplot2.Rmd)
 
 #### Friday, 5. February 2016 - 13:30 - 15:30
 
-* Getting data into R - beyond introduction
+* Getting data into R - introduction
 * Introduction to the grammar of data - the dplyr library
 
 #### Friday, 12. January 2016 - 13:30 - 15:30
