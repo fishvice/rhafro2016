@@ -1,0 +1,252 @@
+% SLIDES - brug denne linie
+\documentclass[mathserif]{beamer} % options: gray
+
+% HANDOUTS - brug denne linie
+%\documentclass[handout,mathserif]{beamer} % options: gray
+
+\usetheme{CambridgeUS} %sidebar
+\usecolortheme{dolphin}
+
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage[T1]{fontenc}
+%\usepackage[icelandic]{babel}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{bm}
+\usepackage{tipx}
+\usepackage{marvosym}
+%\usepackage{subfigure}
+\usepackage{pgfpages}
+\usepackage{multirow}
+
+\usepackage{tikz,makecell}
+\usetikzlibrary{arrows,decorations.pathmorphing,decorations.footprints,
+fadings,calc,trees,mindmap,shadows,decorations.text,patterns,positioning,shapes,matrix,fit}
+\input{../lec1/graphical_settings}
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+% hvis man vil har eg. 4 slides på en side
+% \pgfpagesuselayout{4 on 1}[a4paper,border shrink = 5mm, landscape]
+
+\definecolor{lgrey}{RGB}{245,245,245}
+\setbeamercolor{block body}{fg=black,bg=lgrey}
+
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\bi}{\begin{itemize}\item}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\eq}[1]{\begin{equation} #1 \end{equation}}
+\newcommand{\ea}[1]{\begin{eqnarray} #1 \end{eqnarray}}
+\newcommand{\vs}{\vspace{2mm}}
+
+\definecolor{Red}{rgb}{0.9,0,0.1}
+
+\title[R-Hafro]{Hafro goes R}
+\subtitle{Course on data wrangling using R}
+\author[Bjarki\&Einar]{Bjarki Þór Elvarsson and Einar Hjörleifsson}
+\date{} % beskidt .. men det virker
+\institute[MRI]{Marine Research Institute}
+\beamertemplatenavigationsymbolsempty % fjerner pdf-indhold, til hvis der bare skal printes slides ud
+\AtBeginSection[]{
+\begin{frame}<beamer>
+   \frametitle{Overview}
+   \tableofcontents[currentsection]
+ \end{frame}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+library(ggplot2)
+library(plyr)
+library(dplyr)
+@
+\frame{
+\titlepage
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Overview}
+\tableofcontents
+}
+
+
+\section{Reading data in R}
+\frame{
+\frametitle{Where can we find data}
+\begin{figure}
+  \begin{tikzpicture}[xscale = 1,yscale = 1]
+    \node (lykl)[GenericNodeStyle] at (4,2){Keyboard};
+    \node (tolfr)[GenericNodeStyle] at (-4,2){Other stats software};
+    \node[below of = tolfr](tolff){SPSS,Matlab,SAS};
+    \node (xml)[GenericNodeStyle] at (-4,-2){XML};
+    \node (Excel)[GenericNodeStyle] at (0,2){Excel};
+    \node (dbi)[GenericNodeStyle] at (0,-2){Databases};
+    \node[below of = dbi](sql){ODBC,sqlite,Oracle};
+    \node (R)[GenericNodeStyle] at (0,0){R};
+    \node (text)[GenericNodeStyle] at (4,-2){Textfiles};
+    \node[below of = text](skr){csv,txt,html};
+    \draw[->](lykl)--(R);
+    \draw[->](tolfr)--(R);
+    \draw[<->](Excel)--(R);
+    \draw[<->](dbi)--(R);
+    \draw[<->](text)--(R);
+    \draw[<->](xml)--(R);
+  \end{tikzpicture}
+\end{figure}
+
+
+}
+
+\begin{frame}[fragile]
+\frametitle{Data entered directly into R}
+One of the most useless forms of data enry is the "edit" command in R:
+<<eval=FALSE>>=
+dat <- data.frame(id=numeric(0), species=character(0),
+                  length=numeric(0),age=numeric(0),
+                  lat = numeric(0),lon=numeric(0))
+dat <- edit(dat)
+@
+Note that this only creates variable in R that, unless saved, will disappear when R is closed.
+\end{frame}
+
+\begin{frame}[fragile,shrink=0.8]
+\frametitle{Text files - read in}
+\bi A lot of functions in R deal with reading in text files in various formats
+\vs
+\item Most of these functions are derivatives of \texttt{read.table}, such as \texttt{read.csv} and \texttt{read.delim}
+\ei
+
+<<eval=FALSE>>=
+dat <-
+  read.table(file = "nameOfFile", ## path to the file
+             header = TRUE,       ## are column names
+                                  ## at the top
+             dec = '.',           ## decimal sign
+             sep = ' ',           ## column separator symbol
+             skip = 0,            ## num lines at top to skip
+             stringsAsFactors = FALSE,
+             comment.char = '#')  ## indicating comments
+@
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Text files - written out}
+Analoguous to \texttt{read.table} we have \texttt{write.table}:
+<<eval=FALSE>>=
+write.table(dat,
+            file = 'nameOfFile', ## file name
+            col.names = TRUE,    ## write header
+            row.names = FALSE,   ## write row names
+            quote = FALSE,       ## characters qouted?
+            sep = ',',
+            dec = '.')
+@
+
+\end{frame}
+
+\frame{
+\frametitle{Location of files}
+\begin{columns}
+\begin{column}{0.5\linewidth}
+\begin{figure}
+\begin{tikzpicture}[sibling distance=10em,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white, bottom color=white}],xscale = 0.75,yscale = 0.75]
+  \node {Root}
+    child { node {curr.dir} }
+    child { node {dir1}
+      child { node {dir2}
+        child { node {file1} }
+        child { node {file2} }
+        child { node {file3} }}
+      child { node {wrong.dir}}};
+\end{tikzpicture}
+
+\end{figure}
+\end{column}
+\begin{column}{0.5\linewidth}
+Assume you want read "file3" from "curr.dir":
+\bi Go up one level to "Root": ".."
+\item Go to dir1: "../dir1"
+\item Go to dir2: "../dir1/dir2"
+\item Locate file2: "../dir1/dir2/file2"
+\ei
+\vspace{3cm}
+
+\end{column}
+\end{columns}
+}
+
+\begin{frame}[fragile]
+\frametitle{Excel files}
+The \texttt{readxl} package provides support to read in Excel files directly into R
+<<eval=FALSE>>=
+library(readxl) ## needs to be installed
+# read_excel reads both xls and xlsx files
+read_excel("my-old-spreadsheet.xls")
+read_excel("my-new-spreadsheet.xlsx")
+
+# Specify sheet with a number or name
+read_excel("my-spreadsheet.xls", sheet = "data")
+read_excel("my-spreadsheet.xls", sheet = 2)
+
+# If NAs are represented by something other than blank cells,
+# set the na argument
+read_excel("my-spreadsheet.xls", na = "NA")
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Connecting to an Access database}
+\texttt{RODBC} provides functions to connect to an Access database
+<<eval=FALSE>>=
+# Load RODBC package
+library(RODBC)
+
+# Connect to Access db
+channel <- odbcConnectAccess("C:/Documents/Name_Of_My_Access_Database")
+
+# Get data
+data <- sqlQuery( channel , "select *
+ from Name_of_table_in_my_database")
+
+# close connection
+close(channel)
+
+@
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Class excercise}
+\bi Try the "edit" command, enter some random numbers and save the data to file, open it in Excel and save it as an excel file
+\vs
+\item Open notepad and enter the following data, save it and read into R using \texttt{read.table}:
+\begin{verbatim}
+a   b   c
+1   1.5 cod
+2   2.5 haddock
+\end{verbatim}
+\vs
+\item Install \texttt{readxl} and try to read in the excel data file you created earlier
+\vs
+\item Open an example Access database and run queries from R
+\ei
+\end{frame}
+
+\end{document}
