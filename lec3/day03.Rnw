@@ -239,16 +239,16 @@ R is agnostic to file locations
 <<eval=FALSE>>=
 minke <- read.csv2('minke.csv')
 @
-\item If minke whales are in folder called data within the working directory:
+\item<2-> If minke whales are in folder called data within the working directory:
 <<eval=FALSE>>=
 minke <- read.csv2('data/minke.csv')
 @
-\item If it is somewhere on the computer one can use absolute positioning:
+\item<3-> If it is somewhere on the computer one can use absolute positioning:
 <<eval=FALSE>>=
 minke <- read.csv2('~/data/minke.csv') ## linux/mac
 minke <- read.csv2('c:/data/minke.csv') ## windows
 @
-\item If it is on-line:
+\item<4-> If it is on-line:
 <<eval=FALSE>>=
 minke <-
   read.csv2('http://www.hafro.is/~bthe/data/minke.csv')
@@ -259,7 +259,7 @@ minke <-
 \end{frame}
 
 \frame{
-\frametitle{Location of files -- continued}
+\frametitle{Location of files -- relative positioning}
 \begin{columns}
 \begin{column}{0.5\linewidth}
 \begin{figure}
@@ -298,21 +298,52 @@ Assume you want read "file3" from "curr.dir":
 \frametitle{Excel files}
 The \texttt{readxl} package provides support to read in Excel files directly into R
 <<eval=FALSE>>=
-library(readxl) ## needs to be installed
 # read_excel reads both xls and xlsx files
-read_excel("my-old-spreadsheet.xls")
-read_excel("my-new-spreadsheet.xlsx")
+read_excel("minke.xls")
+read_excel("minke.xlsx")
 
 # Specify sheet with a number or name
-read_excel("my-spreadsheet.xls", sheet = "data")
-read_excel("my-spreadsheet.xls", sheet = 2)
+read_excel("minke.xls", sheet = "data")
+read_excel("minke.xls", sheet = 2)
 
 # If NAs are represented by something other than blank cells,
 # set the na argument
-read_excel("my-spreadsheet.xls", na = "NA")
+read_excel("minke.xls", na = "NA")
+
+## list excel sheets
+excel_sheets('minke.xls')
 @
 
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Writing to Excel--files}
+The \texttt{openxlsx} package can create Excel documents
+<<eval=FALSE>>=
+## write single sheet to file
+write.xlsx(minke,file='minke.xlsx',sheetName='Minke whales')
+
+## multiple sheets
+write.xlsx(list('Minke whales'=minke,'fish'=fish),
+           file='minkeandfish.xlsx')
+
+@
+
+
+\end{frame}
+
+
+
+\frame{
+\frametitle{Databases}
+\bi Databases are commonly used to store (large amounts of) data and numerous software vendors provide database solutions, both general and specific
+\vs
+\item Similarly numerous packages exist to interact with databases in R. Notably \texttt{DBI}, \texttt{RODBC} and \texttt{ora}
+\vs
+\item Typically in an R session the user queries the database for the data needed for a particular analysis and loads it into memory. Larger datasets, that don't fit into memory will need to be subsampled
+\ei
+
+}
 
 
 \begin{frame}[fragile]
@@ -323,7 +354,8 @@ read_excel("my-spreadsheet.xls", na = "NA")
 library(RODBC)
 
 # Connect to Access db
-channel <- odbcConnectAccess("C:/Documents/Name_Of_My_Access_Database")
+channel <-
+  odbcConnectAccess("C:/Documents/Name_Of_My_Access_Database")
 
 # Get data
 data <- sqlQuery( channel , "select *
@@ -337,12 +369,64 @@ close(channel)
 
 \end{frame}
 
-\frame{
-\frametitle{Hafro specific issues}
-
-}
 
 
+
+
+
+\begin{frame}[fragile]
+\frametitle{Oracle databases}
+\bi Oracle has built an extensive R package called \texttt{ROracle}.
+\item Here at Hafro a simple interface package was built, called \texttt{ora}, for the most common use cases
+\ei
+<<eval=FALSE>>=
+## query the database
+hvalir <- sql('select * from hvalir.hvalir_v')
+
+## describe the table (analogous to str in R)
+desc('hvalir.hvalir_v')
+
+## list all tables or view owned by 'hvalir'
+tables('hvalir')
+views('hvalir')
+@
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Hafro data packages}
+In addition to \texttt{ora} two other packages provide access to Hafro data:
+\vs
+\bi \texttt{fjolst} allows the access to commonly database tables and contains a copy of these tables
+\vs
+\item \texttt{Logbooks} contains logbook data from the commercial fishery where available
+\ei
+\vs
+<<eval=FALSE>>=
+data('fjolst')
+data('Logbooks')
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Other software packages}
+\bi Package \texttt{haven} provides support for SPSS, STATA and SAS files
+<<eval=FALSE>>=
+read_sas("path/to/file")  ## SAS files
+read_por("path/to/file")  ## SPSS portable files
+read_sav("path/to/file")  ## SPSS data files
+read_dta("path/to/file")  ## Stata files
+@
+\item Similarly \texttt{R.matlab} can read Matlab files
+<<eval=FALSE>>=
+readMat('path/to/file') ## Matlab data files
+@
+
+\ei
+\end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Class excercise}
@@ -357,7 +441,7 @@ a   b   c
 \vs
 \item Install \texttt{readxl} and try to read in the excel data file you created earlier
 \vs
-\item Open an example Access database and run queries from R
+\item Load the \texttt{ora} package and query 'fiskar.kvarnir'
 \ei
 \end{frame}
 
@@ -401,118 +485,177 @@ For example, one might want to
 \ei
 }
 
+\frame{
+\frametitle{One table verbs}
+\bi filter: keep rows matching criteria
+\vs
+\item select: pick columns by name
+\vs
+\item arrange: order the rows according to a variable
+\vs
+\item mutate: add new variables
+\vs
+\item summarise: reduce variables to values
+\ei
+}
+
+\frame{
+\frametitle{Structure}
+\bi First argument is a data frame
+\vs
+\item Always return a data frame
+\vs
+\item Subsequent arguments say what to do with data frame
+\vs
+\item (Never modify in place)
+\ei
+}
 
 <<echo=FALSE,message=FALSE,warning=FALSE>>=
 minke <- read.csv('../data/minke.csv')
 @
 
-\begin{frame}[fragile,shrink=0.9]
-\frametitle{Filter data}
-One can create a subset of the data using the \texttt{filter} command:
-<<>>=
-## create a dataset with only females
-minke.females <- filter(minke,sex=='Female')
-head(minke.females)
-@
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Logical operators}
-A list of logical operators that are useful when filtering data:
-<<eval=FALSE>>=
-<       # less than
-<=      # less than or equal to
->       # larger than
->=      # larger or equal to
-==      # equal to
-!=      # no equal to
-x | y   # x or y
-x & y   # x and y
-@
 
 
-\end{frame}
+\frame{
+\frametitle{filter}
+\includegraphics[width=0.8\linewidth]{figs/filter.png}
+}
 
 
-\begin{frame}[fragile]
-\frametitle{Modifying columns}
-If one wants to create a new variable (column) into the data sets one can either:
+\frame{
+\frametitle{select}
+\includegraphics[width=0.7\linewidth]{figs/select.png}
+}
 
-<<eval=FALSE>>=
-minke$approx.weight <- 3.85*1e-06*minke$length^3.163
-@
+\frame{
+\frametitle{arrange}
+\includegraphics[width=0.8\linewidth]{figs/arrange.png}
+}
 
-or use mutate
+\frame{
+\frametitle{mutate}
+\includegraphics[width=0.8\linewidth]{figs/mutate.png}
+}
 
-<<eval=FALSE>>=
-minke <- mutate(minke,approx.weight = 3.85*1e-06*length^3.163)
-@
+\frame{
+\frametitle{summarise}
+\includegraphics[width=0.8\linewidth]{figs/summarise.png}
+}
 
-This probably not very useful until you want to create many variables at once:
+\frame{
+\frametitle{Grouped summaries}
+\includegraphics[width=0.8\linewidth]{figs/group_summarise.png}
 
-<<>>=
-minke <- mutate(minke,
-                approx.weight = 3.85*1e-06*length^3.163,
-                weight = ifelse(is.na(weight),approx.weight,
-                                weight))
-@
-
-\end{frame}
-
-
-\begin{frame}[fragile]
-\frametitle{Creating summaries}
-Similarly one can create summaries from the data using the summarise function:
-<<>>=
-summarise(minke,num.obs = length(whale.id))
-@
-
-And new summaries can be added:
-
-<<>>=
-summarise(minke,
-          num.obs = length(whale.id),
-          num.fem = sum(sex == 'Female'),
-          num.large = sum(length > 650))
-@
+}
 
 
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Split - apply - combine}
-\bi Summarise and mutate are somewhat useful on its own but become much more useful when combined with a group\_by statement:
-<<>>=
-## split the analysis by area
-minke <- group_by(minke,maturity)
-summarise(minke,
-          num.obs = length(whale.id),
-          num.fem = sum(sex=='Female'),
-          num.large = sum(length>650))
-
-@
-
-<<echo=FALSE>>=
-minke <- ungroup(minke)
-@
-
-\ei
-\end{frame}
+%' \begin{frame}[fragile,shrink=0.9]
+%' \frametitle{Filter data}
+%' One can create a subset of the data using the \texttt{filter} command:
+%' <<eval=FALSE>>=
+%' ## create a dataset with only females
+%' minke.females <-
+%'   filter(minke,sex=='Female')
+%' @
+%'
+%' \end{frame}
 
 
+%' \begin{frame}[fragile]
+%' \frametitle{Modifying columns}
+%' If one wants to create a new variable (column) into the data sets one can either:
+%'
+%' <<eval=FALSE>>=
+%' minke$approx.weight <- 3.85*1e-06*minke$length^3.163
+%' @
+%'
+%' or use mutate
+%'
+%' <<eval=FALSE>>=
+%' minke <- mutate(minke,approx.weight = 3.85*1e-06*length^3.163)
+%' @
+%'
+%' This probably not very useful until you want to create many variables at once:
+%'
+%' <<>>=
+%' minke <- mutate(minke,
+%'                 approx.weight = 3.85*1e-06*length^3.163,
+%'                 weight = ifelse(is.na(weight),approx.weight,
+%'                                 weight))
+%' @
+%'
+%' \end{frame}
+%'
+%'
+%' \begin{frame}[fragile]
+%' \frametitle{Creating summaries}
+%' Similarly one can create summaries from the data using the summarise function:
+%' <<>>=
+%' summarise(minke,num.obs = length(whale.id))
+%' @
+%'
+%' And new summaries can be added:
+%'
+%' <<>>=
+%' summarise(minke,
+%'           num.obs = length(whale.id),
+%'           num.fem = sum(sex == 'Female'),
+%'           num.large = sum(length > 650))
+%' @
+%'
+%'
+%' \end{frame}
+%'
+%' \begin{frame}[fragile]
+%' \frametitle{Split - apply - combine}
+%' \bi Summarise and mutate are somewhat useful on its own but become much more useful when combined with a group\_by statement:
+%' <<>>=
+%' ## split the analysis by area
+%' minke <- group_by(minke,maturity)
+%' summarise(minke,
+%'           num.obs = length(whale.id),
+%'           num.fem = sum(sex=='Female'),
+%'           num.large = sum(length>650))
+%'
+%' @
+%'
+%' <<echo=FALSE>>=
+%' minke <- ungroup(minke)
+%' @
+%'
+%' \ei
+%' \end{frame}
 \begin{frame}[fragile]
 \frametitle{Chaining expressions together}
-Operations can be chained using the $\%>\%$ operator
-<<>>=
-minke %>%
-  group_by(maturity) %>%
-  summarise(num.obs = length(whale.id),
-            num.fem = sum(sex=='Female'),
-            num.large = sum(length>650))
+All this quickly becomes cumbersome and hard to read:
+<<eval=FALSE>>=
+summarise(
+  group_by(
+    filter(minke,!is.na(weight)),
+    sex),
+  num.whale=n(),
+  m.weight = mean(weight)
+)
 @
-
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The $\%>\%$ operator}
+Operations can however chained using the $\%>\%$ operator
+<<eval=FALSE>>=
+minke %>%
+  filter(!is.na(weight)) %>%
+  group_by(sex) %>%
+  summarise(num.whale = n(),
+            m.weight = mean(weight))
+
+## hint think of %>% as 'then'
+@
+The  $\%>\%$ operator pushes the output from the first command as the first input to the next command
+\end{frame}
+
+
 
 \frame{
 \frametitle{Excercise 3}
@@ -526,20 +669,24 @@ Create a new script, 'Ex3.R' and write code that produces:
 }
 
 
-\section{Cleaning up data}
-\frame{
-\frametitle{Creating variables}
-\begin{itemize}
-\item[A] Coding variable as factors using \texttt{factor} and \texttt{levels}
-\item[B] Split numeric values using \texttt{cut}
-\item[C] Join two or more variables together in a factor
-\item[D] Convert strings to dates using \texttt{as.Date}
-\item[E] Create variables from bits of text
-\item[F] Rename variables
-\item[G] Create summaries
-\end{itemize}
+% \section{Cleaning up data}
+% \frame{
+% \frametitle{Creating variables}
+% \begin{itemize}
+% \item[A] Coding variable as factors using \texttt{factor} and \texttt{levels}
+% \item[B] Split numeric values using \texttt{cut}
+% \item[C] Join two or more variables together in a factor
+% \item[D] Convert strings to dates using \texttt{as.Date}
+% \item[E] Create variables from bits of text
+% \item[F] Rename variables
+% \item[G] Create summaries
+% \end{itemize}
+%
+% }
 
-}
+\section{Reshaping data}
+
+
 
 
 \frame{
