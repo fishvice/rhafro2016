@@ -86,7 +86,7 @@ library(dplyr)
     \node (lykl)[GenericNodeStyle] at (4,2){Keyboard};
     \node (tolfr)[GenericNodeStyle] at (-4,2){Other stats software};
     \node[below of = tolfr](tolff){SPSS,Matlab,SAS};
-    \node (xml)[GenericNodeStyle] at (-4,-2){XML};
+    \node (xml)[GenericNodeStyle] at (-4,-2){Webpages};
     \node (Excel)[GenericNodeStyle] at (0,2){Excel};
     \node (dbi)[GenericNodeStyle] at (0,-2){Databases};
     \node[below of = dbi](sql){ODBC,sqlite,Oracle};
@@ -105,17 +105,46 @@ library(dplyr)
 
 }
 
+\frame{
+\frametitle{Forming the data -- rules of thumb}
+\begin{enumerate}
+\item Does each variable have its own column and each subject it own line?
+\vs
+\item Are there any unecessary lines?
+\vs
+\item Do the data contain any non-US characters?
+\vs
+\item Are there gaps in the data?
+\vs
+\item Are the results entered consistently?
+\vs
+\item Does every variable have its own name?
+\vs
+\item Are the numbers correctly entered?
+\vs
+\item Are there any items that can cause misunderstanding?
+\end{enumerate}
+}
+
 \begin{frame}[fragile]
 \frametitle{Data entered directly into R}
-One of the most useless forms of data enry is the "edit" command in R:
+One quickly enter data into R:
+<<eval=FALSE>>=
+weight <- c(1,5,3,2,6)
+length <- c(10,17,14,12,18)
+@
+
+or if you want a more structured entry:
+
 <<eval=FALSE>>=
 dat <- data.frame(id=numeric(0), species=character(0),
                   length=numeric(0),age=numeric(0),
                   lat = numeric(0),lon=numeric(0))
 dat <- edit(dat)
 @
-Note that this only creates variable in R that, unless saved, will disappear when R is closed.
+but this only creates variable in R that, unless saved, will disappear when R is closed.
 \end{frame}
+
 
 \begin{frame}[fragile,shrink=0.8]
 \frametitle{Text files - read in}
@@ -140,6 +169,41 @@ dat <-
 \end{frame}
 
 
+
+
+
+\begin{frame}[fragile]
+\frametitle{Other read functions}
+<<eval=FALSE>>=
+read.csv        ## US style CSV file
+                ## col sep ',' and dec '.'
+read.csv2       ## European style CSV file
+                ## col sep ';' and dec ','
+read.fwf        ## Fixed width input
+                ## (used in the olden days)
+read.fortran    ## fotran formated text
+readLines       ## raw lines from the file
+scan            ## reads in a vector from the input
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Data sanity check}
+<<eval=FALSE>>=
+head(dat)     ## shows the top 6 lines of dat
+tail(dat)     ## shows the last 6 lines of dat
+dim(dat)      ## shows the num row and col of dat
+names(dat)    ## gives the column names of dat
+summary(dat)  ## Quick summary statistics for the
+              ## cols of dat
+str(dat)      ## show the variable types of dat
+@
+\end{frame}
+
+
+
 \begin{frame}[fragile]
 \frametitle{Text files - written out}
 Analoguous to \texttt{read.table} we have \texttt{write.table}:
@@ -155,8 +219,47 @@ write.table(dat,
 
 \end{frame}
 
-\frame{
+\begin{frame}[fragile]
+\frametitle{Other write functions}
+<<eval=FALSE>>=
+write.csv       ## US style CSV file
+                ## col sep ',' and dec '.'
+write.csv2      ## European style CSV file
+                ## col sep ';' and dec ','
+write.fwf       ## Fixed width input
+                ## from the gdata package
+write           ## write raw lines to a file
+@
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{Location of files}
+R is agnostic to file locations
+\bi One can read a file in the working directory:
+<<eval=FALSE>>=
+minke <- read.csv2('minke.csv')
+@
+\item If minke whales are in folder called data within the working directory:
+<<eval=FALSE>>=
+minke <- read.csv2('data/minke.csv')
+@
+\item If it is somewhere on the computer one can use absolute positioning:
+<<eval=FALSE>>=
+minke <- read.csv2('~/data/minke.csv') ## linux/mac
+minke <- read.csv2('c:/data/minke.csv') ## windows
+@
+\item If it is on-line:
+<<eval=FALSE>>=
+minke <-
+  read.csv2('http://www.hafro.is/~bthe/data/minke.csv')
+@
+
+\ei
+
+\end{frame}
+
+\frame{
+\frametitle{Location of files -- continued}
 \begin{columns}
 \begin{column}{0.5\linewidth}
 \begin{figure}
@@ -181,26 +284,12 @@ Assume you want read "file3" from "curr.dir":
 \bi Go up one level to "Root": ".."
 \item Go to dir1: "../dir1"
 \item Go to dir2: "../dir1/dir2"
-\item Locate file2: "../dir1/dir2/file2"
+\item Locate file3: "../dir1/dir2/file3"
 \ei
 \vspace{3cm}
 
 \end{column}
 \end{columns}
-}
-
-\frame{
-\frametitle{Forming the data -- rules of thumb}
-\begin{enumerate}
-\item Does each variable have its own column and each subject it own line?
-\item Are there any unecessary lines?
-\item Do the data contain any non-US characters?
-\item Are there gaps in the data?
-\item Are the results entered consistently?
-\item Does every variable have its own name?
-\item Are the numbers correctly entered?
-\item Are there any item that can cause misunderstanding?
-\end{enumerate}
 }
 
 
