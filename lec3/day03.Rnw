@@ -77,6 +77,7 @@ library(dplyr)
 }
 
 
+
 \section{Reading data in R}
 \frame{
 \frametitle{Where can we find data}
@@ -188,6 +189,22 @@ Assume you want read "file3" from "curr.dir":
 \end{columns}
 }
 
+\frame{
+\frametitle{Forming the data -- rules of thumb}
+\begin{enumerate}
+\item Does each variable have its own column and each subject it own line?
+\item Are there any unecessary lines?
+\item Do the data contain any non-US characters?
+\item Are there gaps in the data?
+\item Are the results entered consistently?
+\item Does every variable have its own name?
+\item Are the numbers correctly entered?
+\item Are there any item that can cause misunderstanding?
+\end{enumerate}
+}
+
+
+
 \begin{frame}[fragile]
 \frametitle{Excel files}
 The \texttt{readxl} package provides support to read in Excel files directly into R
@@ -231,6 +248,12 @@ close(channel)
 
 \end{frame}
 
+\frame{
+\frametitle{Hafro specific issues}
+
+}
+
+
 
 \begin{frame}[fragile]
 \frametitle{Class excercise}
@@ -249,4 +272,193 @@ a   b   c
 \ei
 \end{frame}
 
+
+
+\section{Data summaries}
+\frame{
+\frametitle{dplyr}
+\bi dplyr is a set of tools for a common set of problems connected to
+aggregates or summaries of data.
+\vs
+\item Similar to ggplot2 it features a Domain Specific Language (DSL)
+  specially designed for data summaries.
+\vs
+\item Developed by Hadley Wickam, the creator ggplot2 and other
+  useful tools.
+\ei
+
+}
+
+
+
+
+\frame{
+\frametitle{Summarising data for groups}
+Commonly, when collating summaries by group, one wants to:
+\bi \textbf{Split} up a big data structure into homogeneous pieces,
+\vs
+\item \textbf{Apply} a function to each piece
+\vs
+\item \textbf{Combine} all the results back together.
+\ei
+
+For example, one might want to
+
+\bi fit the same model each patient subsets of a data frame
+\vs
+\item quickly calculate summary statistics for each group
+\vs
+\item perform group-wise transformations like scaling or standardising
+\ei
+}
+
+
+<<echo=FALSE,message=FALSE,warning=FALSE>>=
+minke <- read.csv('../data/minke.csv')
+@
+
+\begin{frame}[fragile,shrink=0.9]
+\frametitle{Filter data}
+One can create a subset of the data using the \texttt{filter} command:
+<<>>=
+## create a dataset with only females
+minke.females <- filter(minke,sex=='Female')
+head(minke.females)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Logical operators}
+A list of logical operators that are useful when filtering data:
+<<eval=FALSE>>=
+<       # less than
+<=      # less than or equal to
+>       # larger than
+>=      # larger or equal to
+==      # equal to
+!=      # no equal to
+x | y   # x or y
+x & y   # x and y
+@
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Modifying columns}
+If one wants to create a new variable (column) into the data sets one can either:
+
+<<eval=FALSE>>=
+minke$approx.weight <- 3.85*1e-06*minke$length^3.163
+@
+
+or use mutate
+
+<<eval=FALSE>>=
+minke <- mutate(minke,approx.weight = 3.85*1e-06*length^3.163)
+@
+
+This probably not very useful until you want to create many variables at once:
+
+<<>>=
+minke <- mutate(minke,
+                approx.weight = 3.85*1e-06*length^3.163,
+                weight = ifelse(is.na(weight),approx.weight,
+                                weight))
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Creating summaries}
+Similarly one can create summaries from the data using the summarise function:
+<<>>=
+summarise(minke,num.obs = length(whale.id))
+@
+
+And new summaries can be added:
+
+<<>>=
+summarise(minke,
+          num.obs = length(whale.id),
+          num.fem = sum(sex == 'Female'),
+          num.large = sum(length > 650))
+@
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Split - apply - combine}
+\bi Summarise and mutate are somewhat useful on its own but become much more useful when combined with a group\_by statement:
+<<>>=
+## split the analysis by area
+minke <- group_by(minke,maturity)
+summarise(minke,
+          num.obs = length(whale.id),
+          num.fem = sum(sex=='Female'),
+          num.large = sum(length>650))
+
+@
+
+<<echo=FALSE>>=
+minke <- ungroup(minke)
+@
+
+\ei
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Chaining expressions together}
+Operations can be chained using the $\%>\%$ operator
+<<>>=
+minke %>%
+  group_by(maturity) %>%
+  summarise(num.obs = length(whale.id),
+            num.fem = sum(sex=='Female'),
+            num.large = sum(length>650))
+@
+
+\end{frame}
+
+\frame{
+\frametitle{Excercise 3}
+Create a new script, 'Ex3.R' and write code that produces:
+\bi The number of whales caught each year
+\vs
+\item The proportion caught of which are females each year
+\vs
+\item Calculate the mean length and age along with standard deviation grouped by maturity
+\ei
+}
+
+
+\section{Cleaning up data}
+\frame{
+\frametitle{Creating variables}
+\begin{itemize}
+\item[A] Coding variable as factors using \texttt{factor} and \texttt{levels}
+\item[B] Split numeric values using \texttt{cut}
+\item[C] Join two or more variables together in a factor
+\item[D] Convert strings to dates using \texttt{as.Date}
+\item[E] Create variables from bits of text
+\item[F] Rename variables
+\item[G] Create summaries
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Further reading}
+\bi http://vita.had.co.nz/papers/tidy-data.pdf
+\ei
+
+}
 \end{document}
+
+
