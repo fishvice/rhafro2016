@@ -4,6 +4,7 @@ library(tidyr)
 ## one can simply enter data directly to the console
 weight <- c(1,5,3,2,6)
 length <- c(10,17,14,12,18)
+plot(length,weight)
 
 ## or be more clever
 dat <- data.frame(id=numeric(0), species=character(0),
@@ -35,7 +36,7 @@ str(minke)
 
 ## one can write the data to file
 write.table(minke,
-            file = 'minke.csv', ## file name
+            file = 'minke-class.csv', ## file name
             col.names = TRUE,    ## write header
             row.names = FALSE,   ## write row names
             quote = FALSE,       ## characters qouted?
@@ -46,7 +47,7 @@ write.csv(minke,file='minke.csv')
 
 ## location of files
 minke <-
-  read.csv2('http://www.hafro.is/~bthe/data/minke.csv')
+  read.csv('http://www.hafro.is/~bthe/minke.csv')
 
 catatage <-
   read.csv('http://data.hafro.is/assmt/2015/cod/catage.csv')
@@ -76,6 +77,8 @@ library(ora)
 ## query the database
 hvalir <- sql('select * from hvalir.hvalir_v')
 
+cod <- sql('select * from fiskar.kvarnir where tegund = 1')
+
 ## describe the table (analogous to str in R)
 desc('hvalir.hvalir_v')
 
@@ -90,7 +93,8 @@ data('Logbooks')
 ###################################
 
 ## One can create a subset of the data using the \texttt{filter} command:
-
+## load dplyr
+library(dplyr)
 ## create a dataset with only females
 minke.females <-
   filter(minke,sex=='Female')
@@ -235,5 +239,27 @@ minke %>%
   select(whale.id,maturity,lnorm.in,lnorm.out)
 
 
+## class excercise
 
+## num caught by year
+
+minke %>%
+  group_by(year) %>%
+  summarise(num.caught = n())
+
+## num which are females
+
+minke %>%
+  group_by(year) %>%
+  summarise(num.caught = n(),
+            num.fem = sum(sex=='Female'))
+
+## mean age and sd by maturity
+
+minke %>%
+  group_by(maturity) %>%
+  summarise(ml = mean(length),
+            sdl = sd(length),
+            ma = mean(age),
+            sda = sd(age))
 

@@ -1,3 +1,6 @@
+#here is a comment
+#and another
+#
 "whale.id","date.caught","lon","lat","area","length","weight","age","sex","maturity","stomach.volume","stomach.weight","year"
 1,"2004-06-10 22:00:00",-21.4235,65.6618333333333,"North",780,NA,11.3,"Female","pregnant",58,31.9,2004
 690,"2004-06-15 17:00:00",-21.3918333333333,65.6535,"North",793,NA,NA,"Female","pregnant",90,36.29,2004
