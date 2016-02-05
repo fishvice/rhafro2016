@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+
 ## one can simply enter data directly to the console
 weight <- c(1,5,3,2,6)
 length <- c(10,17,14,12,18)
@@ -151,6 +154,50 @@ summarise(minke.NS,
           num.fem = sum(sex == 'Female'),
           num.large = sum(length > 650))
 
+
+## this is the same as splitting things up
+minke.N <- filter(minke,area=='North')
+summarise(minke.N,
+          num.obs = n(),
+          num.fem = sum(sex == 'Female'),
+          num.large = sum(length > 650))
+
+
+minke.S <- filter(minke,area=='South')
+summarise(minke.S,
+          num.obs = n(),
+          num.fem = sum(sex == 'Female'),
+          num.large = sum(length > 650))
+
+
+## reshape data
+## read in data in a wide format and convert to long format
+catatage <-
+  read.csv('http://data.hafro.is/assmt/2015/cod/catage.csv')
+
+head(catatage)
+
+catlong <-
+  gather(catatage,age,number,-Year)
+
+head(catlong)
+
+## long to wide
+minke.y.a <- group_by(minke,year,area)
+num.minke.y.a <- summarise(minke.y.a,num=n())
+
+spread(num.minke.y.a,year,num)
+
+
+## separate
+minke.by.day <-
+  separate(minke,date.caught,c('yr','m','d'),sep='-')
+
+## combine
+minke.m.s <-
+  unite(minke,mat.sex,c(sex,maturity),sep='-')
+
+
 ## chaining operations together
 summarise(
   group_by(
@@ -176,7 +223,17 @@ minke %>%
             num.na = sum(is.na(age)),
             m.age = mean(age,na.rm=TRUE),
             sd.age = sd(age,na.rm=TRUE)) %>%
-  ungroup()%>% ## this removes all grouping from the data
   mutate(prop = n/sum(n)) %>%
   arrange(prop)
+
+## play with ungroup
+minke %>%
+  group_by(maturity) %>%
+  mutate(lnorm.in = length/mean(length)) %>%
+  ungroup() %>%
+  mutate(lnorm.out = length/mean(length)) %>%
+  select(whale.id,maturity,lnorm.in,lnorm.out)
+
+
+
 

@@ -48,7 +48,7 @@ fadings,calc,trees,mindmap,shadows,decorations.text,patterns,positioning,shapes,
 \definecolor{Red}{rgb}{0.9,0,0.1}
 
 \title[R-Hafro]{Hafro goes R}
-\subtitle{Course on data wrangling using R}
+\subtitle{Data read in and the grammar of data}
 \author[Bjarki\&Einar]{Bjarki Þór Elvarsson and Einar Hjörleifsson}
 \date{} % beskidt .. men det virker
 \institute[MRI]{Marine Research Institute}
@@ -428,6 +428,16 @@ readMat('path/to/file') ## Matlab data files
 \ei
 \end{frame}
 
+\frame{
+\frametitle{Further reading}
+\bi http://www.statmethods.net/input/importingdata.html
+\vs
+\item http://www.techonthenet.com/oracle/
+\vs
+\item
+\ei
+}
+
 \begin{frame}[fragile]
 \frametitle{Class excercise}
 \bi Try the "edit" command, enter some random numbers and save the data to file, open it in Excel and save it as an excel file
@@ -447,13 +457,13 @@ a   b   c
 
 
 
-\section{Data summaries}
+\section{Grammar of data}
 \frame{
-\frametitle{dplyr}
-\bi dplyr is a set of tools for a common set of problems connected to
+\frametitle{dplyr and tidyr}
+\bi dplyr and tidyr are a set of tools for a common set of problems connected to
 aggregates or summaries of data.
 \vs
-\item Similar to ggplot2 it features a Domain Specific Language (DSL)
+\item Similar to ggplot2 they feature a Domain Specific Language (DSL)
   specially designed for data summaries.
 \vs
 \item Developed by Hadley Wickam, the creator ggplot2 and other
@@ -511,9 +521,9 @@ For example, one might want to
 \ei
 }
 
-<<echo=FALSE,message=FALSE,warning=FALSE>>=
-minke <- read.csv('../data/minke.csv')
-@
+%<<echo=FALSE,message=FALSE,warning=FALSE>>=
+%minke <- read.csv('../data/minke.csv')
+%@
 
 
 
@@ -543,6 +553,20 @@ minke <- read.csv('../data/minke.csv')
 \includegraphics[width=0.8\linewidth]{figs/summarise.png}
 }
 
+\begin{frame}[fragile]
+\frametitle{Group verbs}
+\bi group\_by: Group data into rows with the same value of (a) particular variable(s)
+<<eval=FALSE>>=
+minke <- group_by(minke,sex)
+@
+\item ungroup: Remove grouping information from data frame
+<<eval=FALSE>>=
+minke <- ungroup(minke)
+@
+
+\ei
+\end{frame}
+
 \frame{
 \frametitle{Grouped summaries}
 \includegraphics[width=0.8\linewidth]{figs/group_summarise.png}
@@ -550,6 +574,44 @@ minke <- read.csv('../data/minke.csv')
 }
 
 
+\frame{
+\frametitle{Reshape verbs}
+\bi gather: Gather columns into rows
+\vs
+\item spread: Spread rows into columns
+\vs
+\item separate: Separate one column into many
+\vs
+\item unite: Unite several columns into one
+\ei
+}
+
+
+\frame{
+\frametitle{Gather}
+\includegraphics[width=0.8\linewidth]{figs/gather.png}
+
+}
+
+
+
+\frame{
+\frametitle{Spread}
+\includegraphics[width=0.8\linewidth]{figs/spread.png}
+
+}
+
+\frame{
+\frametitle{Separate}
+\includegraphics[width=0.8\linewidth]{figs/separate.png}
+
+}
+
+\frame{
+\frametitle{Unite}
+\includegraphics[width=0.8\linewidth]{figs/unite.png}
+
+}
 %' \begin{frame}[fragile,shrink=0.9]
 %' \frametitle{Filter data}
 %' One can create a subset of the data using the \texttt{filter} command:
@@ -626,6 +688,24 @@ minke <- read.csv('../data/minke.csv')
 %'
 %' \ei
 %' \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chaining expressions together}
+\bi In R one can apply functions to data:
+<<eval=FALSE>>=
+avg.l <- mean(minke$length)
+l2 <- avg.l^2
+@
+\item One also chain this together:
+<<eval=FALSE>>=
+l2 <- mean(minke$length)^2
+@
+
+\ei
+
+\end{frame}
+
+
 \begin{frame}[fragile]
 \frametitle{Chaining expressions together}
 All this quickly becomes cumbersome and hard to read:
@@ -642,7 +722,7 @@ summarise(
 
 \begin{frame}[fragile]
 \frametitle{The $\%>\%$ operator}
-Operations can however chained using the $\%>\%$ operator
+Operations can however chained using the $\%>\%$ operator from dplyr
 <<eval=FALSE>>=
 minke %>%
   filter(!is.na(weight)) %>%
@@ -657,6 +737,23 @@ The  $\%>\%$ operator pushes the output from the first command as the first inpu
 
 
 
+\begin{frame}[shrink=0.8]
+\frametitle{Further reading}
+\bi https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+\vs
+\item https://cran.rstudio.com/web/packages/dplyr/\-vignettes/introduction.html
+\vs
+\item http://vita.had.co.nz/papers/tidy-data.pdf
+\vs
+\item http://www.jvcasillas.com/tidyr\_tutorial/
+\vs
+\item http://stackoverflow.com/questions/3505701/r-grouping-functions-sapply-vs-lapply-vs-apply-vs-tapply-vs-by-vs-aggrega
+\ei
+
+\end{frame}
+
+
+
 \frame{
 \frametitle{Excercise 3}
 Create a new script, 'Ex3.R' and write code that produces:
@@ -665,6 +762,8 @@ Create a new script, 'Ex3.R' and write code that produces:
 \item The proportion caught of which are females each year
 \vs
 \item Calculate the mean length and age along with standard deviation grouped by maturity
+\vs
+\item Using $\%>\%$ and spread, calculate number of whales caught by area (rows) and year (columns)
 \ei
 }
 
@@ -684,17 +783,9 @@ Create a new script, 'Ex3.R' and write code that produces:
 %
 % }
 
-\section{Reshaping data}
 
 
 
-
-\frame{
-\frametitle{Further reading}
-\bi http://vita.had.co.nz/papers/tidy-data.pdf
-\ei
-
-}
 \end{document}
 
 
