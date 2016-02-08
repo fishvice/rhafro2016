@@ -30,6 +30,8 @@ The seminars will be in English, this being because the R environment is in that
 * Getting data into R - introduction
 * Introduction to the grammar of data - the dplyr library
 
+[Content](http://www.hafro.is/~bthe/R-hafro-day3.zip)
+
 #### Friday, 12. January 2016 - 13:30 - 15:30
 
 * Data exploration based on grammar of data and graphics
